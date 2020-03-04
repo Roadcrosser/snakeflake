@@ -37,7 +37,7 @@ class SnakeflakeGenerator:
         
         new_snakeflake = 0
 
-        snakeflake_builder_components [
+        snakeflake_builder_components = [
             (timestamp, self._serial_bits),
             (serial, self._machine_id_bits),
             (machine_id, 0)
