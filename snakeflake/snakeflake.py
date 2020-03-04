@@ -1,13 +1,13 @@
 """Snakeflake Main Class"""
 
-from exceptions import ExceededTimeException
+from snakeflake import snakeflake_config, snakeflake_exceptions
 import datetime
 import math
 
 class SnakeflakeGenerator:
     """The Snakeflake Generator"""
 
-    def __init__(self, config:SnakeflakeGeneratorConfig):
+    def __init__(self, config:snakeflake_config.SnakeflakeGeneratorConfig):
         # Adjust snowflake constants
         self._timestamp_bits = config._timestamp_bits
         self._timescale = config._timescale
@@ -28,7 +28,7 @@ class SnakeflakeGenerator:
         timestamp = math.floor(timestamp)
 
         if timestamp > 2 ** self._timestamp_bits:
-            raise ExceededTimeException(f"Worker {self.machine_id}: Too much time has passed from the epoch to be able to generate a snakeflake.")
+            raise snakeflake_exceptions.ExceededTimeException(f"Worker {self.machine_id}: Too much time has passed from the epoch to be able to generate a snakeflake.")
             return
         
         new_snakeflake = 0
@@ -51,6 +51,6 @@ class SnakeflakeGenerator:
         new_snakeflake = None
         try:
             new_snakeflake = next_id()
-        except ExceededTimeException:
+        except snakeflake_exceptions.ExceededTimeException:
             pass
         return new_snakeflake

@@ -1,7 +1,7 @@
 """Snakeflake Configuration"""
 
 import datetime
-from utils import get_ip, ipv4_to_int
+from snakeflake.utils import get_ip, ipv4_to_int
 
 class SnakeflakeConstantConfig:
     """
