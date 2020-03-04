@@ -27,10 +27,10 @@ def ipv4_to_int(ip_address, bitcount):
     ret = 0
     exp = 0
 
-    bitcount /= 2
+    bitcount /= 4
 
     for n in nums:
-        if (exp > bitcount):
+        if (exp >= bitcount):
             break
 
         ret += n * (256 ** exp)
