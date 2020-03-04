@@ -46,4 +46,11 @@ class SnakeflakeGenerator:
         serial = (serial + 1) % 2 ** self._serial_bits
 
         return new_snakeflake
-        
+    
+    def next_id_ignore_warning():
+        new_snakeflake = None
+        try:
+            new_snakeflake = next_id()
+        except ExceededTimeException:
+            pass
+        return new_snakeflake
