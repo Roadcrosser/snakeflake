@@ -5,3 +5,6 @@ class ExceededTimeException(Exception):
 
 class ExceededBitsException(Exception):
     pass
+
+class EpochFutureException(Exception):
+    pass

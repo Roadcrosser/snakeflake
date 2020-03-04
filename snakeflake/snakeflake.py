@@ -32,6 +32,10 @@ class SnakeflakeGenerator:
         timestamp /= self._timescale
         timestamp = math.floor(timestamp)
 
+        if timestamp < 0:
+            raise exceptions.EpochFutureException(f"Worker {self.machine_id}: The epoch is in the future.")
+            return
+
         if timestamp > 2 ** self._timestamp_bits:
             raise exceptions.ExceededTimeException(f"Worker {self.machine_id}: Too much time has passed from the epoch to be able to generate a snakeflake.")
             return
@@ -56,6 +60,6 @@ class SnakeflakeGenerator:
         new_snakeflake = None
         try:
             new_snakeflake = next_id()
-        except exceptions.ExceededTimeException:
+        except (exceptions.ExceededTimeException, exceptions.EpochFutureException):
             pass
         return new_snakeflake
