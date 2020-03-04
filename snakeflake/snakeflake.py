@@ -40,15 +40,15 @@ class SnakeflakeGenerator:
 
         snakeflake_builder_components = [
             (timestamp, self._serial_bits),
-            (serial, self._machine_id_bits),
-            (machine_id, 0)
+            (self.serial, self._machine_id_bits),
+            (self.machine_id, 0)
         ]
 
         for value, bitcount in snakeflake_builder_components:
             new_snakeflake += value
             new_snakeflake << bitcount
 
-        serial = (serial + 1) % 2 ** self._serial_bits
+        self.serial = (self.serial + 1) % 2 ** self._serial_bits
 
         return new_snakeflake
     
