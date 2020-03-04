@@ -22,6 +22,7 @@ class SnakeflakeGeneratorConfig(SnakeflakeConstantConfig):
     """The Snakeflake Generator Config class"""
 
     def __init__(self, epoch:datetime.datetime, machine_id:int=None):
+        super().__init__()
         
         if machine_id == None:
             machine_id = ipv4_to_int(get_ip(), self._machine_id_bits)
