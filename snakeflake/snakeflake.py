@@ -1,26 +1,27 @@
 """Snakeflake Main Class"""
 
-from snakeflake import snakeflake_config, snakeflake_exceptions
+from snakeflake import config, exceptions
 import datetime
 import math
 
 class SnakeflakeGenerator:
     """The Snakeflake Generator"""
 
-    def __init__(self, config:snakeflake_config.SnakeflakeGeneratorConfig):
+    def __init__(self, sfconfig:config.SnakeflakeGeneratorConfig):
         # Adjust snowflake constants
-        self._timestamp_bits = config._timestamp_bits
-        self._timescale = config._timescale
-        self._serial_bits = config._serial_bits
-        self._machine_id_bits = config._machine_id_bits
+        self._timestamp_bits = sfconfig._timestamp_bits
+        self._timescale = sfconfig._timescale
+        self._serial_bits = sfconfig._serial_bits
+        self._machine_id_bits = sfconfig._machine_id_bits
 
         # Set generator settings
-        self.epoch = config.epoch
-        self.machine_id = config.machine_id
+        self.epoch = sfconfig.epoch
+        self.machine_id = sfconfig.machine_id
+
         self.serial = 0
 
         if self.machine_id > 2 ** self._machine_id_bits:
-            raise snakeflake_exceptions.ExceededBitsException(f"Worker {self.machine_id}: The machine ID exceeds the number of bits allocated.")
+            raise exceptions.ExceededBitsException(f"Worker {self.machine_id}: The machine ID exceeds the number of bits allocated.")
             return
 
     def next_id(self):
@@ -32,7 +33,7 @@ class SnakeflakeGenerator:
         timestamp = math.floor(timestamp)
 
         if timestamp > 2 ** self._timestamp_bits:
-            raise snakeflake_exceptions.ExceededTimeException(f"Worker {self.machine_id}: Too much time has passed from the epoch to be able to generate a snakeflake.")
+            raise exceptions.ExceededTimeException(f"Worker {self.machine_id}: Too much time has passed from the epoch to be able to generate a snakeflake.")
             return
         
         new_snakeflake = 0
@@ -55,6 +56,6 @@ class SnakeflakeGenerator:
         new_snakeflake = None
         try:
             new_snakeflake = next_id()
-        except snakeflake_exceptions.ExceededTimeException:
+        except exceptions.ExceededTimeException:
             pass
         return new_snakeflake
