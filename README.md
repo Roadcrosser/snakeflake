@@ -1,5 +1,7 @@
 # Snakeflake
 
+![Snakeflake Icon](snakeflake-icon.png)
+
 Snakeflake is a discrete nonserial ID generator like [Snowflake](https://github.com/twitter-archive/snowflake) and [Sonyflake](https://github.com/sony/sonyflake), implemented in Python.
 
 "Discrete" and "nonserial" are real words. I promise.
@@ -31,7 +33,8 @@ Eh maybe later.
 
 ## To do:
  - [ ] Better Documentation
- - [ ] Add an icon
+ - [x] ~~Add an icon~~
+ - [ ] Add a better icon
  - [ ] Accept a function as a parameter to get the current machine id
  - [ ] Accept a function as a parameter to check the uniqueness of the machine id
  - [ ] Async support (if I decide to do the above)
