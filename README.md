@@ -1,10 +1,11 @@
 # Snakeflake
 
-![Snakeflake Icon](snakeflake-icon.png)
 
 Snakeflake is a discrete nonserial ID generator like [Snowflake](https://github.com/twitter-archive/snowflake) and [Sonyflake](https://github.com/sony/sonyflake), implemented in Python.
 
 "Discrete" and "nonserial" are real words. I promise.
+
+![Snakeflake Icon](snakeflake-icon.png)
 
 ## Usage
 ```py
