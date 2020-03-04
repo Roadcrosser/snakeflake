@@ -20,7 +20,7 @@ class SnakeflakeGenerator:
 
         self.serial = 0
 
-        if self.machine_id > 2 ** self._machine_id_bits:
+        if self.machine_id > (2 ** self._machine_id_bits):
             raise exceptions.ExceededBitsException(f"Worker {self.machine_id}: The machine ID exceeds the number of bits allocated.")
             return
 
@@ -36,7 +36,7 @@ class SnakeflakeGenerator:
             raise exceptions.EpochFutureException(f"Worker {self.machine_id}: The epoch is in the future.")
             return
 
-        if timestamp > 2 ** self._timestamp_bits:
+        if timestamp > (2 ** self._timestamp_bits):
             raise exceptions.ExceededTimeException(f"Worker {self.machine_id}: Too much time has passed from the epoch to be able to generate a snakeflake.")
             return
         
@@ -50,7 +50,7 @@ class SnakeflakeGenerator:
 
         for value, bitcount in snakeflake_builder_components:
             new_snakeflake += value
-            new_snakeflake << bitcount
+            new_snakeflake = new_snakeflake << bitcount
 
         self.serial = (self.serial + 1) % 2 ** self._serial_bits
 
