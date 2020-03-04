@@ -2,3 +2,6 @@
 
 class ExceededTimeException(Exception):
     pass
+
+class ExceededBitsException(Exception):
+    pass

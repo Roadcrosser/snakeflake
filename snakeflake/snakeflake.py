@@ -19,6 +19,10 @@ class SnakeflakeGenerator:
         self.machine_id = config.machine_id
         self.serial = 0
 
+        if self.machine_id > 2 ** self._machine_id_bits:
+            raise snakeflake_exceptions.ExceededBitsException(f"Worker {self.machine_id}: The machine ID exceeds the number of bits allocated.")
+            return
+
     def next_id(self):
         """Returns the next snakeflake ID"""
 
