@@ -22,18 +22,17 @@ def get_ip():
 def ipv4_to_int(ip_address, bitcount):
     """Converts an IPv4 address into an integer with the specified number of bits"""
 
-    nums = [int(i) for i in ip_address.split(".")][::-1]
+    ip_split = [int(i) for i in ip_address.split(".")][::-1]
 
     ret = 0
     exp = 0
 
-    bitcount /= 4
-
-    for n in nums:
-        if (exp >= bitcount):
-            break
-
+    for n in ip_split:
         ret += n * (256 ** exp)
+        ret = ret << 1
         exp += 1
     
+    bits = (1 << bitcount) - 1
+
+    ret = ret & bits
     return ret
