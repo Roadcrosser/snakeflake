@@ -26,7 +26,7 @@ class SnakeflakeGenerator:
     def next_id(self):
         """Returns the next snakeflake ID"""
 
-        timestamp = (datetime.datetime.utcnow() - epoch)
+        timestamp = (datetime.datetime.utcnow() - self.epoch)
         timestamp /= datetime.timedelta(microseconds=1)
         timestamp /= self._timescale
         timestamp = math.floor(timestamp)
