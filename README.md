@@ -1,6 +1,8 @@
 # Snakeflake
 
-Snakeflake is a [Snowflake](https://github.com/twitter-archive/snowflake)/[Sonyflake](https://github.com/sony/sonyflake) implementation done in Python.
+Snakeflake is a discrete nonserial ID generator like [Snowflake](https://github.com/twitter-archive/snowflake) and [Sonyflake](https://github.com/sony/sonyflake)m implemented in Python.
+
+"Discrete" and "nonserial" are real words. I promise.
 
 ## Usage
 ```py
