@@ -19,7 +19,7 @@ class SnakeflakeGenerator:
         self.serial = 0
 
         if self.machine_id > (2 ** self.constants.machine_id_bits):
-            raise exceptions.ExceededBitsException(f"Worker {self.machine_id}: The machine ID exceeds the number of bits allocated.")
+            raise exceptions.ExceededBitsException(utils.format_error(self.machine_id, "The machine ID exceeds the number of bits allocated."))
             return
 
 
