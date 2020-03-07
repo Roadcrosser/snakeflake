@@ -7,13 +7,14 @@ import math
 class SnakeflakeGenerator:
     """The Snakeflake Generator"""
 
-    def __init__(self, sfconfig:config.SnakeflakeGeneratorConfig):
+    def __init__(self, genconfig:config.SnakeflakeGeneratorConfig):
         # Define snowflake constants
-        self.constants = sfconfig.constants
+        self.constants = genconfig.constants
 
         # Set generator settings
-        self.epoch = sfconfig.epoch
-        self.machine_id = sfconfig.machine_id
+        self.epoch = genconfig.epoch
+        self.machine_id = genconfig.machine_id
+        self.timestamp_method = genconfig.timestamp_method
 
         self.serial = 0
 
@@ -23,7 +24,7 @@ class SnakeflakeGenerator:
 
     def next_snakeflake(self):
         """Returns the next snakeflake as an object"""
-        now = datetime.datetime.utcnow()
+        now = self.timestamp_method()
         ret = Snakeflake.from_generator(now, self)
 
         self.serial += 1

@@ -25,13 +25,17 @@ class SnakeflakeConstants:
 class SnakeflakeGeneratorConfig:
     """The Snakeflake Generator Config class"""
 
-    def __init__(self, epoch:datetime.datetime, machine_id:int=None, constants:SnakeflakeConstants=None):
+    def __init__(self, epoch:datetime.datetime, machine_id:int=None, constants:SnakeflakeConstants=None, timestamp_method=None):
         if constants == None:
             constants = SnakeflakeConstants.defaults()
         
         if machine_id == None:
             machine_id = ipv4_to_int(get_ip(), self._machine_id_bits)
+        
+        if timestamp_method == None:
+            timestamp_method = datetime.datetime.utcnow
 
         self.epoch = epoch
         self.machine_id = machine_id
         self.constants = constants
+        self.timestamp_method = timestamp_method
