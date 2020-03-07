@@ -19,6 +19,7 @@ def get_ip():
 
     return ip_address
 
+
 def ipv4_to_int(ip_address, bitcount):
     """Converts an IPv4 address into an integer with the specified number of bits"""
 
@@ -38,6 +39,7 @@ def ipv4_to_int(ip_address, bitcount):
 
     ret = ret & bits
     return ret
+
 
 def format_error(worker_id, message):
     return f"Worker {worker_id}: {message}"

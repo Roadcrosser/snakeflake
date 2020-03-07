@@ -22,6 +22,7 @@ class SnakeflakeGenerator:
             raise exceptions.ExceededBitsException(f"Worker {self.machine_id}: The machine ID exceeds the number of bits allocated.")
             return
 
+
     def next_snakeflake(self):
         """Returns the next snakeflake as an object"""
         now = self.timestamp_method()
@@ -31,9 +32,11 @@ class SnakeflakeGenerator:
 
         return ret
 
+
     def next_id(self):
         """Returns the next snakeflake ID"""
         return self.next_snakeflake().get_id()
+
 
     def next_id_ignore_warning():
         """Returns the next snakeflake ID but ignores any warnings that occur"""
@@ -43,6 +46,9 @@ class SnakeflakeGenerator:
         except (exceptions.ExceededTimeException, exceptions.EpochFutureException):
             pass
         return new_snakeflake
+
+
+
 
 class Snakeflake:
     """Defines a snakeflake"""
@@ -59,13 +65,16 @@ class Snakeflake:
         self.constants = constants
 
         self.calculate_snakeflake()
-    
+
+
     @classmethod
     def from_generator(cls, timestamp, generator:SnakeflakeGenerator):
         return cls(timestamp, generator.epoch, generator.serial, generator.machine_id, generator.constants)
 
+
     def get_id(self):
         return self.snakeflake_id
+
 
     def calculate_snakeflake(self):
         timestamp = (self.timestamp - self.epoch)

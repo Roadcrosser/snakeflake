@@ -17,10 +17,14 @@ class SnakeflakeConstants:
         self.timescale = _timescale
         self.serial_bits = _serial_bits
         self.machine_id_bits = _machine_id_bits
-    
+
+
     @classmethod
     def defaults(cls):
         return cls(39, 10000, 8, 16)
+
+
+
 
 class SnakeflakeGeneratorConfig:
     """The Snakeflake Generator Config class"""
