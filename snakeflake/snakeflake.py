@@ -1,6 +1,6 @@
 """Snakeflake Main Class"""
 
-from snakeflake import config, exceptions
+from snakeflake import config, exceptions, utils
 import datetime
 import math
 
@@ -8,11 +8,8 @@ class SnakeflakeGenerator:
     """The Snakeflake Generator"""
 
     def __init__(self, sfconfig:config.SnakeflakeGeneratorConfig):
-        # Adjust snowflake constants
-        self._timestamp_bits = sfconfig._timestamp_bits
-        self._timescale = sfconfig._timescale
-        self._serial_bits = sfconfig._serial_bits
-        self._machine_id_bits = sfconfig._machine_id_bits
+        # Define snowflake constants
+        self.constants = sfconfig.constants
 
         # Set generator settings
         self.epoch = sfconfig.epoch
@@ -20,31 +17,74 @@ class SnakeflakeGenerator:
 
         self.serial = 0
 
-        if self.machine_id > (2 ** self._machine_id_bits):
+        if self.machine_id > (2 ** self.constants.machine_id_bits):
             raise exceptions.ExceededBitsException(f"Worker {self.machine_id}: The machine ID exceeds the number of bits allocated.")
             return
 
+    def next_snakeflake(self):
+        """Returns the next snakeflake as an object"""
+        now = datetime.datetime.utcnow()
+        ret = Snakeflake.from_generator(now, self)
+
+        self.serial += 1
+
+        return ret
+
     def next_id(self):
         """Returns the next snakeflake ID"""
+        return self.next_snakeflake().get_id()
 
-        timestamp = (datetime.datetime.utcnow() - self.epoch)
+    def next_id_ignore_warning():
+        """Returns the next snakeflake ID but ignores any warnings that occur"""
+        new_snakeflake = None
+        try:
+            new_snakeflake = next_id()
+        except (exceptions.ExceededTimeException, exceptions.EpochFutureException):
+            pass
+        return new_snakeflake
+
+class Snakeflake:
+    """Defines a snakeflake"""
+
+    def __init__(self, timestamp, epoch, serial, machine_id, constants:config.SnakeflakeConstants=None):
+        self.timestamp = timestamp
+        self.epoch = epoch
+        self.serial = serial
+        self.machine_id = machine_id
+
+        if constants == None:
+            constants = config.SnakeflakeConstants.default()
+        
+        self.constants = constants
+
+        self.calculate_snakeflake()
+    
+    @classmethod
+    def from_generator(cls, timestamp, generator:SnakeflakeGenerator):
+        return cls(timestamp, generator.epoch, generator.serial, generator.machine_id, generator.constants)
+
+    def get_id(self):
+        return self.snakeflake_id
+
+    def calculate_snakeflake(self):
+        timestamp = (self.timestamp - self.epoch)
         timestamp /= datetime.timedelta(microseconds=1)
-        timestamp /= self._timescale
+        timestamp /= self.constants.timescale
         timestamp = math.floor(timestamp)
 
         if timestamp < 0:
-            raise exceptions.EpochFutureException(f"Worker {self.machine_id}: The epoch is in the future.")
+            raise exceptions.EpochFutureException(utils.format_error(self.machine_id, "The epoch is in the future."))
             return
 
-        if timestamp > (2 ** self._timestamp_bits):
-            raise exceptions.ExceededTimeException(f"Worker {self.machine_id}: Too much time has passed from the epoch to be able to generate a snakeflake.")
+        if timestamp > (2 ** self.constants.timestamp_bits):
+            raise exceptions.ExceededTimeException(utils.format_error(self.machine_id, "Too much time has passed from the epoch to be able to generate a snakeflake."))
             return
         
         new_snakeflake = 0
 
         snakeflake_builder_components = [
-            (timestamp, self._serial_bits),
-            (self.serial, self._machine_id_bits),
+            (timestamp, self.constants.serial_bits),
+            (self.serial, self.constants.machine_id_bits),
             (self.machine_id, 0)
         ]
 
@@ -52,14 +92,6 @@ class SnakeflakeGenerator:
             new_snakeflake += value
             new_snakeflake = new_snakeflake << bitcount
 
-        self.serial = (self.serial + 1) % 2 ** self._serial_bits
+        self.serial = (self.serial + 1) % 2 ** self.constants.serial_bits
 
-        return new_snakeflake
-    
-    def next_id_ignore_warning():
-        new_snakeflake = None
-        try:
-            new_snakeflake = next_id()
-        except (exceptions.ExceededTimeException, exceptions.EpochFutureException):
-            pass
-        return new_snakeflake
+        self.snakeflake_id = new_snakeflake
