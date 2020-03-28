@@ -171,11 +171,12 @@ class Snakeflake:
         self.snakeflake_id = new_snakeflake
 
     def calculate(self):
-        """A "smart" calculation method that lets the user not have to worry which calculation method to use."""
+        """A generic "smart" calculation method that lets the user not have to worry which calculation method to use."""
         if self.snakeflake_id == None:
             self.calculate_snakeflake()
         else:
             self.reverse_calculate_snakeflake()
 
     def get_id(self):
+        """Returns the snakeflake ID"""
         return self.snakeflake_id
