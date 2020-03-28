@@ -32,6 +32,7 @@ class SnakeflakeGenerator:
         """Returns the next snakeflake as an object"""
         now = self.timestamp_method()
         ret = Snakeflake.from_generator(now, self)
+        ret.calculate_snakeflake()
 
         self.serial += 1
 
@@ -47,38 +48,54 @@ class Snakeflake:
 
     def __init__(
         self,
-        timestamp,
-        epoch,
-        serial,
-        machine_id,
+        timestamp: datetime.datetime,
+        serial: int,
+        machine_id: int,
+        epoch: datetime.datetime = None,
         constants: config.SnakeflakeConstants = None,
+        snakeflake_id: int = None,
     ):
         self.timestamp = timestamp
-        self.epoch = epoch
         self.serial = serial
         self.machine_id = machine_id
+
+        if epoch == None:
+            epoch = utils.world_epoch()
+
+        self.epoch = epoch
 
         if constants == None:
             constants = config.SnakeflakeConstants.defaults()
 
         self.constants = constants
 
-        self.calculate_snakeflake()
+        self.snakeflake_id = snakeflake_id
 
     @classmethod
-    def from_generator(cls, timestamp, generator: SnakeflakeGenerator):
+    def from_generator(cls, timestamp: datetime, generator: SnakeflakeGenerator):
         return cls(
             timestamp,
-            generator.epoch,
             generator.serial,
             generator.machine_id,
+            generator.epoch,
             generator.constants,
+            None,
         )
+
+    @classmethod
+    def from_snakeflake(
+        cls,
+        snakeflake_id: int,
+        epoch: datetime = None,
+        constants: config.SnakeflakeConstants = None,
+    ):
+        return cls(None, None, None, epoch, constants, snakeflake_id,)
 
     def get_id(self):
         return self.snakeflake_id
 
     def calculate_snakeflake(self):
+        """Calculates a snakeflake"""
         timestamp = self.timestamp - self.epoch
         timestamp /= datetime.timedelta(microseconds=1)
         timestamp /= self.constants.timescale

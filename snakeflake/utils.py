@@ -1,6 +1,8 @@
 """General utilities"""
 
 import socket
+import datetime
+
 
 def get_ip():
     """Gets your IP address"""
@@ -34,7 +36,7 @@ def ipv4_to_int(ip_address, bitcount):
         ret += n
 
         print(hex(ret))
-    
+
     bits = (1 << bitcount) - 1
 
     ret = ret & bits
@@ -43,3 +45,7 @@ def ipv4_to_int(ip_address, bitcount):
 
 def format_error(worker_id, message):
     return f"Worker {worker_id}: {message}"
+
+
+def world_epoch():
+    return datetime.datetime.fromtimestamp(0)
