@@ -35,8 +35,6 @@ def ipv4_to_int(ip_address, bitcount):
         ret = ret << to_shift
         ret += n
 
-        print(hex(ret))
-
     bits = (1 << bitcount) - 1
 
     ret = ret & bits
@@ -49,3 +47,7 @@ def format_error(worker_id, message):
 
 def world_epoch():
     return datetime.datetime.fromtimestamp(0)
+
+
+def bitfill(num):
+    return sum(2 ** i for i in range(num))
