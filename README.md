@@ -41,7 +41,7 @@ Eh maybe later.
  - [ ] Async support (if I decide to do the above)
  - [x] Add tests(!!!)
  - [x] Add a snakeflake decoder
- - [ ] Publish (🎉🎉🎉)
+ - [x] Publish (🎉🎉🎉)
 
 ## Contributing
 
