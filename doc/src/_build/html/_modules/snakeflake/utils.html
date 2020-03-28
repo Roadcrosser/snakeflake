@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>snakeflake.utils &#8212; Snakeflake 0.1.5.2 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for snakeflake.utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;General utilities&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+
+<div class="viewcode-block" id="get_ip"><a class="viewcode-back" href="../../snakeflake.html#snakeflake.utils.get_ip">[docs]</a><span class="k">def</span> <span class="nf">get_ip</span><span class="p">(</span><span class="n">dummy_ip</span><span class="o">=</span><span class="s2">&quot;192.168.0.1&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets your IP address</span>
+<span class="sd">    </span>
+<span class="sd">    This occurs by pinging a dummy IP.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dummy_ip (str): The IP(v4) address to ping to get your IP(v4) address. Defaults to `192.169.0.1`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Your IP address.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># TODO: IPv6 support</span>
+    <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span>
+
+    <span class="n">ip_address</span> <span class="o">=</span> <span class="s2">&quot;127.0.0.1&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sock</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="n">dummy_ip</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">ip_address</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">ip_address</span></div>
+
+
+<div class="viewcode-block" id="ipv4_to_int"><a class="viewcode-back" href="../../snakeflake.html#snakeflake.utils.ipv4_to_int">[docs]</a><span class="k">def</span> <span class="nf">ipv4_to_int</span><span class="p">(</span><span class="n">ip_address</span><span class="p">,</span> <span class="n">bitcount</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts an IPv4 address into an integer with the specified number of bits.</span>
+<span class="sd">    </span>
+<span class="sd">    This number used for the Machine ID if none is specified.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        ip_address (str): Your IP(v4) address.</span>
+<span class="sd">        bitcount (int): The upper limit of bits allowed.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: The converted number.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ip_split</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ip_address</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)]</span>
+
+    <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">to_shift</span> <span class="o">=</span> <span class="mi">8</span>
+
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">ip_split</span><span class="p">:</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span> <span class="o">&lt;&lt;</span> <span class="n">to_shift</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="n">n</span>
+
+    <span class="n">bits</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bitcount</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span> <span class="o">&amp;</span> <span class="n">bits</span>
+    <span class="k">return</span> <span class="n">ret</span></div>
+
+
+<div class="viewcode-block" id="format_error"><a class="viewcode-back" href="../../snakeflake.html#snakeflake.utils.format_error">[docs]</a><span class="k">def</span> <span class="nf">format_error</span><span class="p">(</span><span class="n">worker_id</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Worker </span><span class="si">{</span><span class="n">worker_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+<div class="viewcode-block" id="world_epoch"><a class="viewcode-back" href="../../snakeflake.html#snakeflake.utils.world_epoch">[docs]</a><span class="k">def</span> <span class="nf">world_epoch</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Returns the datetime of the epoch.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        datetime.datetime: The epoch datetime.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="bitfill"><a class="viewcode-back" href="../../snakeflake.html#snakeflake.utils.bitfill">[docs]</a><span class="k">def</span> <span class="nf">bitfill</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Fills a number of bits with 1.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        num (int): The number of bits to fill.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: The filled bits.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="timestamp_to_microseconds"><a class="viewcode-back" href="../../snakeflake.html#snakeflake.utils.timestamp_to_microseconds">[docs]</a><span class="k">def</span> <span class="nf">timestamp_to_microseconds</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts a datetime object to the number of microseconds since epoch.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ts (datetime.datetime): The datetime object.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        int: The number of microseconds from epoch.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">microsecond_amount</span> <span class="o">=</span> <span class="mi">1000000</span>  <span class="c1"># 1 second worth of microseconds</span>
+    <span class="k">return</span> <span class="n">ts</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">*</span> <span class="n">microsecond_amount</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Snakeflake</a></h1>
+
+
+
+<p class="blurb">A versatile ID generation system</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Roadcrosser&repo=snakeflake&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Roadcrosser.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

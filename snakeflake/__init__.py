@@ -1,3 +1,3 @@
 """Snakeflake init file"""
 
-__all__ = ["snakeflake", "utils", "config", "exceptions"]
+__all__ = ["snakeflake", "config", "utils", "exceptions"]

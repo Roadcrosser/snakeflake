@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>snakeflake.config &#8212; Snakeflake 0.1.5.2 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for snakeflake.config</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Snakeflake Configuration</span>
+
+<span class="sd">This module defines the classes related to configuring a Snakeflake generator.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">snakeflake.utils</span> <span class="kn">import</span> <span class="n">get_ip</span><span class="p">,</span> <span class="n">ipv4_to_int</span><span class="p">,</span> <span class="n">world_epoch</span>
+
+
+<div class="viewcode-block" id="SnakeflakeConstants"><a class="viewcode-back" href="../../snakeflake.html#snakeflake.config.SnakeflakeConstants">[docs]</a><span class="k">class</span> <span class="nc">SnakeflakeConstants</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Snakeflake Config class that deals with constants</span>
+<span class="sd">    </span>
+<span class="sd">    The default values were taken from https://github.com/sony/sonyflake.</span>
+
+<span class="sd">    You can change them to suit your needs if you need to, I suppose.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp_bits</span><span class="p">,</span> <span class="n">timescale</span><span class="p">,</span> <span class="n">serial_bits</span><span class="p">,</span> <span class="n">machine_id_bits</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timestamp_bits</span> <span class="o">=</span> <span class="n">timestamp_bits</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timescale</span> <span class="o">=</span> <span class="n">timescale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">serial_bits</span> <span class="o">=</span> <span class="n">serial_bits</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">machine_id_bits</span> <span class="o">=</span> <span class="n">machine_id_bits</span>
+
+<div class="viewcode-block" id="SnakeflakeConstants.defaults"><a class="viewcode-back" href="../../snakeflake.html#snakeflake.config.SnakeflakeConstants.defaults">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">defaults</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="mi">39</span><span class="p">,</span> <span class="mi">10000</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="SnakeflakeGeneratorConfig"><a class="viewcode-back" href="../../snakeflake.html#snakeflake.config.SnakeflakeGeneratorConfig">[docs]</a><span class="k">class</span> <span class="nc">SnakeflakeGeneratorConfig</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;The Snakeflake Generator Config class&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">epoch</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">machine_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">constants</span><span class="p">:</span> <span class="n">SnakeflakeConstants</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">timestamp_method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">epoch</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">epoch</span> <span class="o">=</span> <span class="n">world_epoch</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">constants</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">constants</span> <span class="o">=</span> <span class="n">SnakeflakeConstants</span><span class="o">.</span><span class="n">defaults</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">machine_id</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">machine_id</span> <span class="o">=</span> <span class="n">ipv4_to_int</span><span class="p">(</span><span class="n">get_ip</span><span class="p">(),</span> <span class="n">constants</span><span class="o">.</span><span class="n">machine_id_bits</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">timestamp_method</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">timestamp_method</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="n">epoch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">machine_id</span> <span class="o">=</span> <span class="n">machine_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">constants</span> <span class="o">=</span> <span class="n">constants</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timestamp_method</span> <span class="o">=</span> <span class="n">timestamp_method</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Snakeflake</a></h1>
+
+
+
+<p class="blurb">A versatile ID generation system</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Roadcrosser&repo=snakeflake&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Roadcrosser.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,17 @@
+Welcome to Snakeflake's documentation!
+======================================
+
+Snakeflake is a discrete nonserial ID generator like Snowflake and Sonyflake, implemented in Python.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

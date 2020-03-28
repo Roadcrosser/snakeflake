@@ -33,15 +33,15 @@ Snakeflake is a discrete nonserial ID generator like [Snowflake](https://github.
 Eh maybe later.
 
 ## To do:
- - [ ] Better Documentation
+ - [x] Better Documentation
+ - [x] Add tests(!!!)
+ - [x] Add a snakeflake decoder
+ - [x] Publish (🎉🎉🎉)
  - [x] ~~Add an icon~~
  - [ ] Add a better icon
  - [ ] Accept a function as a parameter to get the current machine id
  - [ ] Accept a function as a parameter to check the uniqueness of the machine id
  - [ ] Async support (if I decide to do the above)
- - [x] Add tests(!!!)
- - [x] Add a snakeflake decoder
- - [x] Publish (🎉🎉🎉)
 
 ## Contributing
 

@@ -1,0 +1,373 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>snakeflake.snakeflake &#8212; Snakeflake 0.1.5.2 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for snakeflake.snakeflake</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Snakeflake Main Class</span>
+
+<span class="sd">This module defines the Snakeflake Generator and Snakeflake classes.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">snakeflake</span> <span class="kn">import</span> <span class="n">config</span><span class="p">,</span> <span class="n">exceptions</span><span class="p">,</span> <span class="n">utils</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+
+<div class="viewcode-block" id="SnakeflakeGenerator"><a class="viewcode-back" href="../../snakeflake.html#snakeflake.snakeflake.SnakeflakeGenerator">[docs]</a><span class="k">class</span> <span class="nc">SnakeflakeGenerator</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;The Snakeflake generator.</span>
+<span class="sd">    </span>
+<span class="sd">    This class allows one to generate snakeflakes quickly and easily</span>
+<span class="sd">    after initializing. It also manages serial number incrementing.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">genconfig</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">SnakeflakeGeneratorConfig</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            genconfig: The config to initialize the generator.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            exceptions.ExceededBitsException: If the machine ID exceeds the number of bits allocated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Define snakeflake constants</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">constants</span> <span class="o">=</span> <span class="n">genconfig</span><span class="o">.</span><span class="n">constants</span>
+
+        <span class="c1"># Set generator settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="n">genconfig</span><span class="o">.</span><span class="n">epoch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">machine_id</span> <span class="o">=</span> <span class="n">genconfig</span><span class="o">.</span><span class="n">machine_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timestamp_method</span> <span class="o">=</span> <span class="n">genconfig</span><span class="o">.</span><span class="n">timestamp_method</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">serial</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">machine_id</span> <span class="o">&gt;</span> <span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">machine_id_bits</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">ExceededBitsException</span><span class="p">(</span>
+                <span class="n">utils</span><span class="o">.</span><span class="n">format_error</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">machine_id</span><span class="p">,</span>
+                    <span class="s2">&quot;The machine ID exceeds the number of bits allocated.&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+
+<div class="viewcode-block" id="SnakeflakeGenerator.next_snakeflake"><a class="viewcode-back" href="../../snakeflake.html#snakeflake.snakeflake.SnakeflakeGenerator.next_snakeflake">[docs]</a>    <span class="k">def</span> <span class="nf">next_snakeflake</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the next snakeflake as an object and increments the serial.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Snakeflake: The snakeflake object</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            exceptions.ExceededTimeException: If too much time has passed to be able to generate a snakeflake.</span>
+<span class="sd">            exceptions.EpochFutureException: If the epoch is in the future.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timestamp_method</span><span class="p">()</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">Snakeflake</span><span class="o">.</span><span class="n">from_generator</span><span class="p">(</span><span class="n">now</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">calculate_snakeflake</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">serial</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="SnakeflakeGenerator.next_id"><a class="viewcode-back" href="../../snakeflake.html#snakeflake.snakeflake.SnakeflakeGenerator.next_id">[docs]</a>    <span class="k">def</span> <span class="nf">next_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calls :meth:`next_snakeflake` and returns the next snakeflake ID.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The snakeflake ID.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            exceptions.ExceededTimeException: If too much time has passed to be able to generate a snakeflake.</span>
+<span class="sd">            exceptions.EpochFutureException: If the epoch is in the future.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_snakeflake</span><span class="p">()</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="Snakeflake"><a class="viewcode-back" href="../../snakeflake.html#snakeflake.snakeflake.Snakeflake">[docs]</a><span class="k">class</span> <span class="nc">Snakeflake</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Defines a snakeflake</span>
+<span class="sd">    </span>
+<span class="sd">    This class holds the attributes of a snakeflake and</span>
+<span class="sd">    calculates the actual snakeflake ID.</span>
+
+<span class="sd">    When instancing this class, please try to use the</span>
+<span class="sd">    :meth:`classmethods &lt;from_generator&gt;` to generate snakeflakes instead.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        timestamp: The timestamp of the snakeflake.</span>
+<span class="sd">        serial: The serial number of the snakeflake.</span>
+<span class="sd">        machine_id: The machine ID of the snakeflake.</span>
+<span class="sd">        epoch: When this snakeflake started counting from.</span>
+<span class="sd">        constants: The constants this snakeflake uses.</span>
+<span class="sd">        snakeflake_id: The ID of this snakeflake.</span>
+<span class="sd">            This should only be specified if you are deriving information from a snakeflake ID.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span>
+        <span class="n">serial</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">machine_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">epoch</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">constants</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">SnakeflakeConstants</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">snakeflake_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="n">timestamp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">serial</span> <span class="o">=</span> <span class="n">serial</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">machine_id</span> <span class="o">=</span> <span class="n">machine_id</span>
+
+        <span class="k">if</span> <span class="n">epoch</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">epoch</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">world_epoch</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="n">epoch</span>
+
+        <span class="k">if</span> <span class="n">constants</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">constants</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">SnakeflakeConstants</span><span class="o">.</span><span class="n">defaults</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">constants</span> <span class="o">=</span> <span class="n">constants</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">snakeflake_id</span> <span class="o">=</span> <span class="n">snakeflake_id</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="nb">abs</span><span class="p">(</span>
+                <span class="n">utils</span><span class="o">.</span><span class="n">timestamp_to_microseconds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span><span class="p">)</span>
+                <span class="o">-</span> <span class="n">utils</span><span class="o">.</span><span class="n">timestamp_to_microseconds</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">timestamp</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">timescale</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">serial</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">serial</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">machine_id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">machine_id</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">snakeflake_id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">snakeflake_id</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Snakeflake.from_generator"><a class="viewcode-back" href="../../snakeflake.html#snakeflake.snakeflake.Snakeflake.from_generator">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_generator</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">generator</span><span class="p">:</span> <span class="n">SnakeflakeGenerator</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates a snakeflake using data from the generator object.</span>
+<span class="sd">        Note that this will not increment the serial number of the generator itself.</span>
+<span class="sd">        Please instead generate snakeflakes from the :class:`SnakeflakeGenerator` directly for this functionality.</span>
+
+<span class="sd">        The snakeflake ID itself will not be calculated until :meth:`calculate_snakeflake` is run.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            timestamp: The timestamp of the snakeflake.</span>
+<span class="sd">            generator: The generator with the data that will be used to generate the snakeflake.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">timestamp</span><span class="p">,</span>
+            <span class="n">generator</span><span class="o">.</span><span class="n">serial</span><span class="p">,</span>
+            <span class="n">generator</span><span class="o">.</span><span class="n">machine_id</span><span class="p">,</span>
+            <span class="n">generator</span><span class="o">.</span><span class="n">epoch</span><span class="p">,</span>
+            <span class="n">generator</span><span class="o">.</span><span class="n">constants</span><span class="p">,</span>
+            <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Snakeflake.from_snakeflake"><a class="viewcode-back" href="../../snakeflake.html#snakeflake.snakeflake.Snakeflake.from_snakeflake">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_snakeflake</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">snakeflake_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">epoch</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">constants</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">SnakeflakeConstants</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates a snakeflake from a snakeflake ID. This is usually</span>
+<span class="sd">        used for deriving the timestamp of a snakeflake, although the</span>
+<span class="sd">        serial and machine IDs will also be calculated.</span>
+
+<span class="sd">        Note that the resulting attributes will not be calculated until</span>
+<span class="sd">        :meth:`reverse_calculate_snakeflake` is run.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            snakeflake_id: The snakeflake.</span>
+<span class="sd">            epoch: When this snakeflake started counting from.</span>
+<span class="sd">            constants: The constants this snakeflake uses.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">constants</span><span class="p">,</span> <span class="n">snakeflake_id</span><span class="p">,)</span></div>
+
+<div class="viewcode-block" id="Snakeflake.calculate_snakeflake"><a class="viewcode-back" href="../../snakeflake.html#snakeflake.snakeflake.Snakeflake.calculate_snakeflake">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_snakeflake</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculates a snakeflake.</span>
+<span class="sd">        </span>
+<span class="sd">        This method calculates and updates the `snakeflake_id` attribute</span>
+<span class="sd">        based on the `timestamp`, `serial`, and `machine_id`</span>
+<span class="sd">        attributes set upon initialization.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span>
+        <span class="n">timestamp</span> <span class="o">/=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">microseconds</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">timestamp</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">timescale</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">timestamp</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">EpochFutureException</span><span class="p">(</span>
+                <span class="n">utils</span><span class="o">.</span><span class="n">format_error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">machine_id</span><span class="p">,</span> <span class="s2">&quot;The epoch is in the future.&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">timestamp</span> <span class="o">&gt;</span> <span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">timestamp_bits</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">ExceededTimeException</span><span class="p">(</span>
+                <span class="n">utils</span><span class="o">.</span><span class="n">format_error</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">machine_id</span><span class="p">,</span>
+                    <span class="s2">&quot;Too much time has passed from the epoch to be able to generate a snakeflake.&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">new_snakeflake</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">snakeflake_builder_components</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">serial_bits</span><span class="p">),</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">serial</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">machine_id_bits</span><span class="p">),</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">machine_id</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">value</span><span class="p">,</span> <span class="n">bitcount</span> <span class="ow">in</span> <span class="n">snakeflake_builder_components</span><span class="p">:</span>
+            <span class="n">new_snakeflake</span> <span class="o">+=</span> <span class="n">value</span>
+            <span class="n">new_snakeflake</span> <span class="o">=</span> <span class="n">new_snakeflake</span> <span class="o">&lt;&lt;</span> <span class="n">bitcount</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">serial</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">serial</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">serial_bits</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">snakeflake_id</span> <span class="o">=</span> <span class="n">new_snakeflake</span></div>
+
+<div class="viewcode-block" id="Snakeflake.reverse_calculate_snakeflake"><a class="viewcode-back" href="../../snakeflake.html#snakeflake.snakeflake.Snakeflake.reverse_calculate_snakeflake">[docs]</a>    <span class="k">def</span> <span class="nf">reverse_calculate_snakeflake</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates and updates the snakeflake&#39;s attributes from the snakeflake ID.</span>
+
+<span class="sd">        Typically used with the :meth:`from_snakeflake` classmethod.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">snakeflake_component_lengths</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">machine_id_bits</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">serial_bits</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">timestamp_bits</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">w_snakeflake</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">snakeflake_id</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">snakeflake_component_lengths</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">+=</span> <span class="p">[</span><span class="n">w_snakeflake</span> <span class="o">&amp;</span> <span class="n">utils</span><span class="o">.</span><span class="n">bitfill</span><span class="p">(</span><span class="n">b</span><span class="p">)]</span>
+            <span class="n">w_snakeflake</span> <span class="o">=</span> <span class="n">w_snakeflake</span> <span class="o">&gt;&gt;</span> <span class="n">b</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">machine_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">serial</span><span class="p">,</span> <span class="n">timestamp</span> <span class="o">=</span> <span class="n">res</span>
+
+        <span class="n">timestamp</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">timescale</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">microseconds</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">+</span> <span class="n">timestamp</span></div>
+
+<div class="viewcode-block" id="Snakeflake.calculate"><a class="viewcode-back" href="../../snakeflake.html#snakeflake.snakeflake.Snakeflake.calculate">[docs]</a>    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A generic &quot;smart&quot; calculation method that runs either</span>
+<span class="sd">        :meth:`calculate_snakeflake` or :meth:`reverse_calculate_snakeflake`</span>
+<span class="sd">        depending on the current attributes set.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">snakeflake_id</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calculate_snakeflake</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reverse_calculate_snakeflake</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Snakeflake.get_id"><a class="viewcode-back" href="../../snakeflake.html#snakeflake.snakeflake.Snakeflake.get_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The snakeflake ID</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">snakeflake_id</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Snakeflake</a></h1>
+
+
+
+<p class="blurb">A versatile ID generation system</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Roadcrosser&repo=snakeflake&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Roadcrosser.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

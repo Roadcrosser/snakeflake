@@ -1,0 +1,431 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Snakeflake &#8212; Snakeflake 0.1.5.2 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Snakeflake Documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="snakeflake">
+<h1>Snakeflake<a class="headerlink" href="#snakeflake" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-snakeflake.snakeflake">
+<span id="snakeflake-snakeflake-snakeflake-module"></span><h2>Snakeflake - <em>snakeflake.snakeflake</em> module<a class="headerlink" href="#module-snakeflake.snakeflake" title="Permalink to this headline">¶</a></h2>
+<p>Snakeflake Main Class</p>
+<p>This module defines the Snakeflake Generator and Snakeflake classes.</p>
+<dl class="class">
+<dt id="snakeflake.snakeflake.SnakeflakeGenerator">
+<em class="property">class </em><code class="sig-prename descclassname">snakeflake.snakeflake.</code><code class="sig-name descname">SnakeflakeGenerator</code><span class="sig-paren">(</span><em class="sig-param">genconfig</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/snakeflake/snakeflake.html#SnakeflakeGenerator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.snakeflake.SnakeflakeGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Snakeflake generator.</p>
+<p>This class allows one to generate snakeflakes quickly and easily
+after initializing. It also manages serial number incrementing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>genconfig</strong> (<a class="reference internal" href="#snakeflake.config.SnakeflakeGeneratorConfig" title="snakeflake.config.SnakeflakeGeneratorConfig"><em>SnakeflakeGeneratorConfig</em></a>) – The config to initialize the generator.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#snakeflake.exceptions.ExceededBitsException" title="snakeflake.exceptions.ExceededBitsException"><strong>ExceededBitsException</strong></a> – If the machine ID exceeds the number of bits allocated.</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="snakeflake.snakeflake.SnakeflakeGenerator.next_id">
+<code class="sig-name descname">next_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/snakeflake/snakeflake.html#SnakeflakeGenerator.next_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.snakeflake.SnakeflakeGenerator.next_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls <a class="reference internal" href="#snakeflake.snakeflake.SnakeflakeGenerator.next_snakeflake" title="snakeflake.snakeflake.SnakeflakeGenerator.next_snakeflake"><code class="xref py py-meth docutils literal notranslate"><span class="pre">next_snakeflake()</span></code></a> and returns the next snakeflake ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>int</em> – The snakeflake ID.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#snakeflake.exceptions.ExceededTimeException" title="snakeflake.exceptions.ExceededTimeException"><strong>ExceededTimeException</strong></a> – If too much time has passed to be able to generate a snakeflake.</p></li>
+<li><p><a class="reference internal" href="#snakeflake.exceptions.EpochFutureException" title="snakeflake.exceptions.EpochFutureException"><strong>EpochFutureException</strong></a> – If the epoch is in the future.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="snakeflake.snakeflake.SnakeflakeGenerator.next_snakeflake">
+<code class="sig-name descname">next_snakeflake</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/snakeflake/snakeflake.html#SnakeflakeGenerator.next_snakeflake"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.snakeflake.SnakeflakeGenerator.next_snakeflake" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the next snakeflake as an object and increments the serial.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>Snakeflake</em> – The snakeflake object</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#snakeflake.exceptions.ExceededTimeException" title="snakeflake.exceptions.ExceededTimeException"><strong>ExceededTimeException</strong></a> – If too much time has passed to be able to generate a snakeflake.</p></li>
+<li><p><a class="reference internal" href="#snakeflake.exceptions.EpochFutureException" title="snakeflake.exceptions.EpochFutureException"><strong>EpochFutureException</strong></a> – If the epoch is in the future.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="snakeflake.snakeflake.Snakeflake">
+<em class="property">class </em><code class="sig-prename descclassname">snakeflake.snakeflake.</code><code class="sig-name descname">Snakeflake</code><span class="sig-paren">(</span><em class="sig-param">timestamp</em>, <em class="sig-param">serial</em>, <em class="sig-param">machine_id</em>, <em class="sig-param">epoch=None</em>, <em class="sig-param">constants=None</em>, <em class="sig-param">snakeflake_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/snakeflake/snakeflake.html#Snakeflake"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.snakeflake.Snakeflake" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines a snakeflake</p>
+<p>This class holds the attributes of a snakeflake and
+calculates the actual snakeflake ID.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When instancing this class, please try to use the
+<a class="reference internal" href="#snakeflake.snakeflake.Snakeflake.from_generator" title="snakeflake.snakeflake.Snakeflake.from_generator"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_generator()</span></code></a> or <code class="xref py py-meth docutils literal notranslate"><span class="pre">from_snowflake()</span></code>
+classmethods to generate snakeflakes instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timestamp</strong> (<em>datetime.datetime</em>) – The timestamp of the snakeflake.</p></li>
+<li><p><strong>serial</strong> (<em>int</em>) – The serial number of the snakeflake.</p></li>
+<li><p><strong>machine_id</strong> (<em>int</em>) – The machine ID of the snakeflake.</p></li>
+<li><p><strong>epoch</strong> (<em>datetime.datetime</em>) – When this snakeflake started counting from.</p></li>
+<li><p><strong>constants</strong> (<a class="reference internal" href="#snakeflake.config.SnakeflakeConstants" title="snakeflake.config.SnakeflakeConstants"><em>SnakeflakeConstants</em></a>) – The constants this snakeflake uses.</p></li>
+<li><p><strong>snakeflake_id</strong> (<em>int</em>) – The ID of this snakeflake.
+This should only be specified if you are deriving information from a snakeflake ID.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="snakeflake.snakeflake.Snakeflake.calculate">
+<code class="sig-name descname">calculate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/snakeflake/snakeflake.html#Snakeflake.calculate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.snakeflake.Snakeflake.calculate" title="Permalink to this definition">¶</a></dt>
+<dd><p>A generic “smart” calculation method that runs either
+<a class="reference internal" href="#snakeflake.snakeflake.Snakeflake.calculate_snakeflake" title="snakeflake.snakeflake.Snakeflake.calculate_snakeflake"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calculate_snakeflake()</span></code></a> or <a class="reference internal" href="#snakeflake.snakeflake.Snakeflake.reverse_calculate_snakeflake" title="snakeflake.snakeflake.Snakeflake.reverse_calculate_snakeflake"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reverse_calculate_snakeflake()</span></code></a>
+depending on the current attributes set.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="snakeflake.snakeflake.Snakeflake.calculate_snakeflake">
+<code class="sig-name descname">calculate_snakeflake</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/snakeflake/snakeflake.html#Snakeflake.calculate_snakeflake"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.snakeflake.Snakeflake.calculate_snakeflake" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates a snakeflake.</p>
+<p>This method calculates and updates the <cite>snakeflake_id</cite> attribute
+based on the <cite>timestamp</cite>, <cite>serial</cite>, and <cite>machine_id</cite>
+attributes set upon initialization.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="snakeflake.snakeflake.Snakeflake.from_generator">
+<em class="property">classmethod </em><code class="sig-name descname">from_generator</code><span class="sig-paren">(</span><em class="sig-param">timestamp</em>, <em class="sig-param">generator</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/snakeflake/snakeflake.html#Snakeflake.from_generator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.snakeflake.Snakeflake.from_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a snakeflake using data from the generator object.
+The snakeflake ID itself will not be calculated until <a class="reference internal" href="#snakeflake.snakeflake.Snakeflake.calculate_snakeflake" title="snakeflake.snakeflake.Snakeflake.calculate_snakeflake"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calculate_snakeflake()</span></code></a> is run.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This will not increment the serial number of the generator itself.
+Please instead generate snakeflakes from the <a class="reference internal" href="#snakeflake.snakeflake.SnakeflakeGenerator" title="snakeflake.snakeflake.SnakeflakeGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">SnakeflakeGenerator</span></code></a> directly for this functionality.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timestamp</strong> (<em>datetime.datetime</em>) – The timestamp of the snakeflake.</p></li>
+<li><p><strong>generator</strong> (<a class="reference internal" href="#snakeflake.snakeflake.SnakeflakeGenerator" title="snakeflake.snakeflake.SnakeflakeGenerator"><em>SnakeflakeGenerator</em></a>) – The generator with the data that will be used to generate the snakeflake.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="snakeflake.snakeflake.Snakeflake.from_snakeflake">
+<em class="property">classmethod </em><code class="sig-name descname">from_snakeflake</code><span class="sig-paren">(</span><em class="sig-param">snakeflake_id</em>, <em class="sig-param">epoch=None</em>, <em class="sig-param">constants=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/snakeflake/snakeflake.html#Snakeflake.from_snakeflake"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.snakeflake.Snakeflake.from_snakeflake" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a snakeflake from a snakeflake ID. This is usually
+used for deriving the timestamp of a snakeflake, although the
+serial and machine IDs will also be calculated.</p>
+<p>Note that the resulting attributes will not be calculated until
+<a class="reference internal" href="#snakeflake.snakeflake.Snakeflake.reverse_calculate_snakeflake" title="snakeflake.snakeflake.Snakeflake.reverse_calculate_snakeflake"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reverse_calculate_snakeflake()</span></code></a> is run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>snakeflake_id</strong> (<em>int</em>) – The snakeflake.</p></li>
+<li><p><strong>epoch</strong> (<em>datetime.datetime</em>) – When this snakeflake started counting from.</p></li>
+<li><p><strong>constants</strong> (<a class="reference internal" href="#snakeflake.config.SnakeflakeConstants" title="snakeflake.config.SnakeflakeConstants"><em>SnakeflakeConstants</em></a>) – The constants this snakeflake uses.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="snakeflake.snakeflake.Snakeflake.get_id">
+<code class="sig-name descname">get_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/snakeflake/snakeflake.html#Snakeflake.get_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.snakeflake.Snakeflake.get_id" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>int</em> – The snakeflake ID</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="snakeflake.snakeflake.Snakeflake.reverse_calculate_snakeflake">
+<code class="sig-name descname">reverse_calculate_snakeflake</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/snakeflake/snakeflake.html#Snakeflake.reverse_calculate_snakeflake"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.snakeflake.Snakeflake.reverse_calculate_snakeflake" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates and updates the snakeflake’s attributes from the snakeflake ID.</p>
+<p>Typically used with the <a class="reference internal" href="#snakeflake.snakeflake.Snakeflake.from_snakeflake" title="snakeflake.snakeflake.Snakeflake.from_snakeflake"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_snakeflake()</span></code></a> classmethod.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-snakeflake.config">
+<span id="config-snakeflake-config-module"></span><h2>Config - <em>snakeflake.config</em> module<a class="headerlink" href="#module-snakeflake.config" title="Permalink to this headline">¶</a></h2>
+<p>Snakeflake Configuration</p>
+<p>This module defines the classes related to configuring a Snakeflake generator.</p>
+<dl class="class">
+<dt id="snakeflake.config.SnakeflakeConstants">
+<em class="property">class </em><code class="sig-prename descclassname">snakeflake.config.</code><code class="sig-name descname">SnakeflakeConstants</code><span class="sig-paren">(</span><em class="sig-param">timestamp_bits</em>, <em class="sig-param">timescale</em>, <em class="sig-param">serial_bits</em>, <em class="sig-param">machine_id_bits</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/snakeflake/config.html#SnakeflakeConstants"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.config.SnakeflakeConstants" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Snakeflake Config class that deals with constants</p>
+<p>It is recommended to initialize this class using the <a class="reference internal" href="#snakeflake.config.SnakeflakeConstants.defaults" title="snakeflake.config.SnakeflakeConstants.defaults"><code class="xref py py-meth docutils literal notranslate"><span class="pre">defaults()</span></code></a>
+classmethod instead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timestamp_bits</strong> (<em>int</em>) – The number of bits to allocate for the timestamp.</p></li>
+<li><p><strong>timescale</strong> (<em>int</em>) – The timestamp precision in microseconds.</p></li>
+<li><p><strong>serial_bits</strong> (<em>int</em>) – The number of bits to allocate for the serial number.</p></li>
+<li><p><strong>machine_id_bits</strong> (<em>int</em>) – The number of bits to allocate for the machine ID.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="snakeflake.config.SnakeflakeConstants.defaults">
+<em class="property">classmethod </em><code class="sig-name descname">defaults</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/snakeflake/config.html#SnakeflakeConstants.defaults"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.config.SnakeflakeConstants.defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the constants with their default values.</p>
+<p>These default values were taken from <a class="reference external" href="https://github.com/sony/sonyflake">https://github.com/sony/sonyflake</a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="snakeflake.config.SnakeflakeGeneratorConfig">
+<em class="property">class </em><code class="sig-prename descclassname">snakeflake.config.</code><code class="sig-name descname">SnakeflakeGeneratorConfig</code><span class="sig-paren">(</span><em class="sig-param">epoch=None</em>, <em class="sig-param">machine_id=None</em>, <em class="sig-param">constants=None</em>, <em class="sig-param">timestamp_method=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/snakeflake/config.html#SnakeflakeGeneratorConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.config.SnakeflakeGeneratorConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>The class that holds the configuration Snakeflake Generator Config class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>epoch</strong> (<em>datetime.datetime</em>) – When to start generating snakeflakes from.</p></li>
+<li><p><strong>machine_id</strong> (<em>int</em>) – The machine ID of the generator.</p></li>
+<li><p><strong>constants</strong> (<em>int</em>) – The constants this generator uses.</p></li>
+<li><p><strong>timestamp_method</strong> (<em>builtin_function_or_method</em>) – The method to call
+to generate a timestamp. This method will be called with no
+arguments whenever a snakeflake is to be generated.
+Defaults to <cite>datetime.datetime.utcnow</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-snakeflake.utils">
+<span id="utils-snakeflake-utils-module"></span><h2>Utils - <em>snakeflake.utils</em> module<a class="headerlink" href="#module-snakeflake.utils" title="Permalink to this headline">¶</a></h2>
+<p>General utilities</p>
+<dl class="function">
+<dt id="snakeflake.utils.bitfill">
+<code class="sig-prename descclassname">snakeflake.utils.</code><code class="sig-name descname">bitfill</code><span class="sig-paren">(</span><em class="sig-param">num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/snakeflake/utils.html#bitfill"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.utils.bitfill" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fills a number of bits with 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>num</strong> (<em>int</em>) – The number of bits to fill.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>int</em> – The filled bits.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="snakeflake.utils.format_error">
+<code class="sig-prename descclassname">snakeflake.utils.</code><code class="sig-name descname">format_error</code><span class="sig-paren">(</span><em class="sig-param">worker_id</em>, <em class="sig-param">message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/snakeflake/utils.html#format_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.utils.format_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formats an error message with the provided worker ID.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="snakeflake.utils.get_ip">
+<code class="sig-prename descclassname">snakeflake.utils.</code><code class="sig-name descname">get_ip</code><span class="sig-paren">(</span><em class="sig-param">dummy_ip='192.168.0.1'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/snakeflake/utils.html#get_ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.utils.get_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets your IP address</p>
+<p>This is done by pinging a dummy IP.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dummy_ip</strong> (<em>str</em>) – The IP(v4) address to ping to get your IP(v4) address. Defaults to <cite>192.169.0.1</cite>.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>str</em> – Your IP address.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="snakeflake.utils.ipv4_to_int">
+<code class="sig-prename descclassname">snakeflake.utils.</code><code class="sig-name descname">ipv4_to_int</code><span class="sig-paren">(</span><em class="sig-param">ip_address</em>, <em class="sig-param">bitcount</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/snakeflake/utils.html#ipv4_to_int"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.utils.ipv4_to_int" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an IPv4 address into an integer with the specified number of bits.</p>
+<p>This number used for the Machine ID if none is specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ip_address</strong> (<em>str</em>) – Your IP(v4) address.</p></li>
+<li><p><strong>bitcount</strong> (<em>int</em>) – The upper limit of bits allowed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>int</em> – The converted number.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="snakeflake.utils.timestamp_to_microseconds">
+<code class="sig-prename descclassname">snakeflake.utils.</code><code class="sig-name descname">timestamp_to_microseconds</code><span class="sig-paren">(</span><em class="sig-param">ts</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/snakeflake/utils.html#timestamp_to_microseconds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.utils.timestamp_to_microseconds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a datetime object to the number of microseconds since epoch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ts</strong> (<em>datetime.datetime</em>) – The datetime object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>int</em> – The number of microseconds from epoch.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="snakeflake.utils.world_epoch">
+<code class="sig-prename descclassname">snakeflake.utils.</code><code class="sig-name descname">world_epoch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/snakeflake/utils.html#world_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.utils.world_epoch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the datetime of the epoch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>datetime.datetime</em> – The epoch datetime.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-snakeflake.exceptions">
+<span id="exceptions-snakeflake-exceptions-module"></span><h2>Exceptions - <em>snakeflake.exceptions</em> module<a class="headerlink" href="#module-snakeflake.exceptions" title="Permalink to this headline">¶</a></h2>
+<p>Defines Custom Exceptions</p>
+<dl class="exception">
+<dt id="snakeflake.exceptions.EpochFutureException">
+<em class="property">exception </em><code class="sig-prename descclassname">snakeflake.exceptions.</code><code class="sig-name descname">EpochFutureException</code><a class="reference internal" href="_modules/snakeflake/exceptions.html#EpochFutureException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.exceptions.EpochFutureException" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="snakeflake.exceptions.ExceededBitsException">
+<em class="property">exception </em><code class="sig-prename descclassname">snakeflake.exceptions.</code><code class="sig-name descname">ExceededBitsException</code><a class="reference internal" href="_modules/snakeflake/exceptions.html#ExceededBitsException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.exceptions.ExceededBitsException" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="snakeflake.exceptions.ExceededTimeException">
+<em class="property">exception </em><code class="sig-prename descclassname">snakeflake.exceptions.</code><code class="sig-name descname">ExceededTimeException</code><a class="reference internal" href="_modules/snakeflake/exceptions.html#ExceededTimeException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#snakeflake.exceptions.ExceededTimeException" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Snakeflake</a></h1>
+
+
+
+<p class="blurb">A versatile ID generation system</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Roadcrosser&repo=snakeflake&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Snakeflake</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-snakeflake.snakeflake">Snakeflake - <em>snakeflake.snakeflake</em> module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-snakeflake.config">Config - <em>snakeflake.config</em> module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-snakeflake.utils">Utils - <em>snakeflake.utils</em> module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-snakeflake.exceptions">Exceptions - <em>snakeflake.exceptions</em> module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Snakeflake Documentation</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Roadcrosser.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/snakeflake.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

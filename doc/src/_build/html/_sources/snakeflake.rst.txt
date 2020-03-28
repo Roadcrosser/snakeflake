@@ -1,0 +1,37 @@
+Snakeflake
+==================
+
+Submodules
+----------
+
+Snakeflake - *snakeflake.snakeflake* module
+-------------------------------------------
+
+.. automodule:: snakeflake.snakeflake
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Config - *snakeflake.config* module
+-----------------------------------
+
+.. automodule:: snakeflake.config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Utils - *snakeflake.utils* module
+---------------------------------
+
+.. automodule:: snakeflake.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Exceptions - *snakeflake.exceptions* module
+-------------------------------------------
+
+.. automodule:: snakeflake.exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:
