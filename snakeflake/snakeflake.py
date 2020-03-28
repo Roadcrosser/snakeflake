@@ -132,9 +132,6 @@ class Snakeflake:
         timestamp = datetime.timedelta(microseconds=timestamp)
         self.timestamp = self.epoch + timestamp
 
-    def get_id(self):
-        return self.snakeflake_id
-
     def calculate_snakeflake(self):
         """Calculates a snakeflake"""
         timestamp = self.timestamp - self.epoch
@@ -172,3 +169,13 @@ class Snakeflake:
         self.serial = (self.serial + 1) % 2 ** self.constants.serial_bits
 
         self.snakeflake_id = new_snakeflake
+
+    def calculate(self):
+        """A "smart" calculation method that lets the user not have to worry which calculation method to use."""
+        if self.snakeflake_id == None:
+            self.calculate_snakeflake()
+        else:
+            self.reverse_calculate_snakeflake()
+
+    def get_id(self):
+        return self.snakeflake_id
