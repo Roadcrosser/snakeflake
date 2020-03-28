@@ -71,6 +71,17 @@ class Snakeflake:
 
         self.snakeflake_id = snakeflake_id
 
+    def __eq__(self, other):
+        return (
+            self.timestamp == other.timestamp
+            and self.serial == other.serial
+            and self.machine_id == other.machine_id
+            and self.snakeflake_id == other.snakeflake_id
+        )
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     @classmethod
     def from_generator(cls, timestamp: datetime, generator: SnakeflakeGenerator):
         return cls(
