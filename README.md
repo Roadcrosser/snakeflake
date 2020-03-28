@@ -39,8 +39,8 @@ Eh maybe later.
  - [ ] Accept a function as a parameter to get the current machine id
  - [ ] Accept a function as a parameter to check the uniqueness of the machine id
  - [ ] Async support (if I decide to do the above)
- - [ ] Add tests(!!!)
- - [ ] Add a snakeflake decoder
+ - [x] Add tests(!!!)
+ - [x] Add a snakeflake decoder
  - [ ] Publish (🎉🎉🎉)
 
 ## Contributing
