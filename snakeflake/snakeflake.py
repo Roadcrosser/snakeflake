@@ -73,7 +73,11 @@ class Snakeflake:
 
     def __eq__(self, other):
         return (
-            self.timestamp == other.timestamp
+            abs(
+                utils.timestamp_to_microseconds(self.timestamp)
+                - utils.timestamp_to_microseconds(other.timestamp)
+            )
+            <= self.constants.timescale
             and self.serial == other.serial
             and self.machine_id == other.machine_id
             and self.snakeflake_id == other.snakeflake_id

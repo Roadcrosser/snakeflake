@@ -2,6 +2,7 @@
 
 import socket
 import datetime
+import math
 
 
 def get_ip():
@@ -51,3 +52,8 @@ def world_epoch():
 
 def bitfill(num):
     return sum(2 ** i for i in range(num))
+
+
+def timestamp_to_microseconds(ts):
+    microsecond_amount = 1000000  # 1 second worth of microseconds
+    return ts.timestamp() * microsecond_amount
