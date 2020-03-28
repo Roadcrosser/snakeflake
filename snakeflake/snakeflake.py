@@ -41,15 +41,6 @@ class SnakeflakeGenerator:
         """Returns the next snakeflake ID"""
         return self.next_snakeflake().get_id()
 
-    def next_id_ignore_exception(self):
-        """Returns the next snakeflake ID but ignores any exceptions that occur"""
-        new_snakeflake = None
-        try:
-            new_snakeflake = self.next_id()
-        except (exceptions.ExceededTimeException, exceptions.EpochFutureException):
-            pass
-        return new_snakeflake
-
 
 class Snakeflake:
     """Defines a snakeflake"""
