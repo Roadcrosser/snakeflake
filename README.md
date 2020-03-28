@@ -30,7 +30,15 @@ Snakeflake is a discrete nonserial ID generator like [Snowflake](https://github.
 
 ## Installation
 
-Eh maybe later.
+You can install Snakeflake using pip:
+
+```
+pip install snakeflake
+```
+
+## Documentation
+
+View the documentation [here](http://roadcrosser.xyz/snakeflake/).
 
 ## To do:
  - [x] Better Documentation
