@@ -91,6 +91,32 @@ class Snakeflake:
     ):
         return cls(None, None, None, epoch, constants, snakeflake_id,)
 
+    def reverse_calculate_snakeflake(self):
+        """
+        Calculates and populates snakeflake's members from the ID.
+        Typically used with the `from_snakeflake` classmethod.
+        """
+
+        snakeflake_component_lengths = (
+            self.constants.machine_id_bits,
+            self.constants.serial_bits,
+            self.constants.timestamp_bits,
+        )
+
+        w_snakeflake = self.snakeflake_id
+
+        res = []
+
+        for b in snakeflake_component_lengths:
+            res += [w_snakeflake & utils.bitfill(b)]
+            w_snakeflake = w_snakeflake >> b
+
+        self.machine_id, self.serial, timestamp = res
+
+        timestamp *= self.constants.timescale
+        timestamp = datetime.timedelta(microseconds=timestamp)
+        self.timestamp = self.epoch + timestamp
+
     def get_id(self):
         return self.snakeflake_id
 
