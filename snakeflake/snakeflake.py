@@ -59,7 +59,7 @@ class Snakeflake:
         self.machine_id = machine_id
 
         if constants == None:
-            constants = config.SnakeflakeConstants.default()
+            constants = config.SnakeflakeConstants.defaults()
 
         self.constants = constants
 
