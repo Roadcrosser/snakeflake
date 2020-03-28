@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="snakeflake",
-    version="0.1.5",
+    version="0.1.5.1",
     author="Roadcrosser",
     author_email="roadcrosser0@gmail.com",
     description="A snowflake implementation in Python",
