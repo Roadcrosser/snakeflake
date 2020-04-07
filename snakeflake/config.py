@@ -34,6 +34,13 @@ class SnakeflakeConstants:
         Initializes the constants with their default values.
 
         These default values were taken from https://github.com/sony/sonyflake.
+
+        The default values are:
+
+            - timestamp: :code:`39 bits`
+            - serial: :code:`8 bits`
+            - machine ID: :code:`16 bits`
+            - timescale: :code:`10000 microseconds` 
         """
         return cls(39, 10000, 8, 16)
 
